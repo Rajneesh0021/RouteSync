@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { Search, MapPin, Navigation, Car, Users, TrendingUp, Star, ChevronLeft, Info, Loader2, Target, Crosshair } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import L from 'leaflet';
-import { passengerService } from '../services/api';
+import { passengerService, mapService } from '../services/api';
 
 // Fix for default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -95,8 +95,7 @@ export const PassengerApp = ({ isPublic = false }) => {
 
     debounceTimer.current = setTimeout(async () => {
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=5&countrycodes=in`);
-        const data = await res.json();
+        const data = await mapService.searchAddress(query);
         setSuggestions(data.map(item => ({ label: item.display_name, lat: parseFloat(item.lat), lon: parseFloat(item.lon), type })));
       } catch (e) {
         console.error("Discovery Node Error:", e);
@@ -117,8 +116,7 @@ export const PassengerApp = ({ isPublic = false }) => {
       setManualCenter([latitude, longitude]);
       
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        const data = await res.json();
+        const data = await mapService.reverseGeocode(latitude, longitude);
         setAddress(prev => ({ ...prev, pickup: data.display_name || "Current Node Position" }));
       } catch (e) {
         setAddress(prev => ({ ...prev, pickup: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` }));
@@ -159,8 +157,7 @@ export const PassengerApp = ({ isPublic = false }) => {
     setDrop(coords);
     setAddress(prev => ({ ...prev, drop: "Acquiring Coordinates..." }));
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords[0]}&lon=${coords[1]}`);
-      const data = await res.json();
+      const data = await mapService.reverseGeocode(coords[0], coords[1]);
       setAddress(prev => ({ ...prev, drop: data.display_name || `${coords[0].toFixed(4)}, ${coords[1].toFixed(4)}` }));
     } catch (e) {
       setAddress(prev => ({ ...prev, drop: `${coords[0].toFixed(4)}, ${coords[1].toFixed(4)}` }));

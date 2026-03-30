@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, useMapEvents } from 'react-leaflet';
-import { authService, driverService } from '../services/api';
+import { authService, driverService, mapService } from '../services/api';
 import { Power, MapPin, Navigation, Info, Car, Users, ChevronUp, ChevronDown, User, Search, Target, CheckCircle2, XCircle, Crosshair, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import L from 'leaflet';
@@ -132,8 +132,7 @@ export const DriverDashboard = () => {
       setStartLoc([latitude, longitude]);
       
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        const data = await res.json();
+        const data = await mapService.reverseGeocode(latitude, longitude);
         setAddress(prev => ({ ...prev, start: data.display_name || "Current Node Position" }));
       } catch (e) {
         setAddress(prev => ({ ...prev, start: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}` }));
@@ -192,8 +191,7 @@ export const DriverDashboard = () => {
 
     debounceTimer.current = setTimeout(async () => {
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=5&countrycodes=in`);
-        const data = await res.json();
+        const data = await mapService.searchAddress(query);
         setSuggestions(data.map(item => ({ label: item.display_name, lat: parseFloat(item.lat), lon: parseFloat(item.lon), type })));
       } catch (e) {
         console.error("Discovery Node Error:", e);
@@ -217,8 +215,7 @@ export const DriverDashboard = () => {
     setEndLoc(coords);
     setAddress(prev => ({ ...prev, end: "Acquiring Coordinates..." }));
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords[0]}&lon=${coords[1]}`);
-      const data = await res.json();
+      const data = await mapService.reverseGeocode(coords[0], coords[1]);
       setAddress(prev => ({ ...prev, end: data.display_name || `${coords[0].toFixed(4)}, ${coords[1].toFixed(4)}` }));
     } catch (e) {
       setAddress(prev => ({ ...prev, end: `${coords[0].toFixed(4)}, ${coords[1].toFixed(4)}` }));

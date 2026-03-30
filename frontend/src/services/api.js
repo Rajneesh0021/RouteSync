@@ -63,4 +63,17 @@ export const routeService = {
   getRoutes: () => api.get('/routes'),
 };
 
+export const adminService = {
+  getUsers: () => api.get('/admin/users'),
+  getDrivers: () => api.get('/admin/drivers'),
+  verifyDriver: (driverId, status) => api.put(`/admin/drivers/${driverId}/verify`, { status }),
+  createEmployee: (data) => api.post('/admin/employees', data),
+};
+
+const MAP_URL = import.meta.env.VITE_MAP_API_URL || 'https://nominatim.openstreetmap.org';
+export const mapService = {
+  searchAddress: (query) => fetch(`${MAP_URL}/search?format=json&q=${query}&limit=5&countrycodes=in`).then(r => r.json()),
+  reverseGeocode: (lat, lon) => fetch(`${MAP_URL}/reverse?format=json&lat=${lat}&lon=${lon}`).then(r => r.json())
+};
+
 export default api;

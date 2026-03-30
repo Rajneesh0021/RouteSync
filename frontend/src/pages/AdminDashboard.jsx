@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import { adminService } from '../services/api';
 import { Shield, ShieldAlert, CheckCircle, XCircle, Users, Car, UserPlus, Loader2, RefreshCw } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -17,10 +17,10 @@ export const AdminDashboard = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const usersRes = await api.get('/admin/users');
+      const usersRes = await adminService.getUsers();
       setUsers(usersRes.data.data);
       
-      const driversRes = await api.get('/admin/drivers');
+      const driversRes = await adminService.getDrivers();
       setDrivers(driversRes.data.data);
     } catch (e) {
       console.error(e);
@@ -35,7 +35,7 @@ export const AdminDashboard = () => {
 
   const handleVerify = async (driverId, status) => {
     try {
-      await api.put(`/admin/drivers/${driverId}/verify`, { status });
+      await adminService.verifyDriver(driverId, status);
       const up = drivers.map(d => d._id === driverId ? { ...d, verificationStatus: status } : d);
       setDrivers(up);
     } catch (e) {
@@ -47,7 +47,7 @@ export const AdminDashboard = () => {
     e.preventDefault();
     setEmpMsg('Processing...');
     try {
-      await api.post('/admin/employees', { name: empName, email: empEmail, password: empPassword });
+      await adminService.createEmployee({ name: empName, email: empEmail, password: empPassword });
       setEmpMsg('Employee account provisioned securely.');
       setEmpName(''); setEmpEmail(''); setEmpPassword('');
       fetchData(); // Refresh user list to show new employee
