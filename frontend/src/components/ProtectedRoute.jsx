@@ -7,6 +7,7 @@ export const ProtectedRoute = ({ roles, publicOnly = false }) => {
 
   // If page is only for non-authenticated users (Login/Register/Home)
   if (publicOnly && isAuthenticated) {
+    if (user?.role === 'admin' || user?.role === 'employee') return <Navigate to="/admin" replace />;
     if (user?.role === 'driver') return <Navigate to="/driver" replace />;
     if (user?.role === 'passenger') return <Navigate to="/ride" replace />;
     return <Navigate to="/" replace />;
@@ -19,6 +20,7 @@ export const ProtectedRoute = ({ roles, publicOnly = false }) => {
 
   // If role validation is required
   if (!publicOnly && roles && !roles.includes(user?.role)) {
+    if (user?.role === 'admin' || user?.role === 'employee') return <Navigate to="/admin" replace />;
     if (user?.role === 'driver') return <Navigate to="/driver" replace />;
     if (user?.role === 'passenger') return <Navigate to="/ride" replace />;
     return <Navigate to="/" replace />;

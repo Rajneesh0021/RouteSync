@@ -20,6 +20,10 @@
 }
 
 @layer base {
+  html, body, #root {
+    @apply h-full w-full;
+  }
+  
   body {
     @apply bg-[#F9FAFB] text-[#1F2937] antialiased;
     font-family: 'Inter', sans-serif;

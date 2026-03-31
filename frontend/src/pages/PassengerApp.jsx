@@ -192,7 +192,7 @@ export const PassengerApp = ({ isPublic = false }) => {
   }, [step, pickup, drop]);
 
   return (
-    <div className="relative h-full w-full overflow-hidden flex flex-col bg-bg-light font-outfit">
+    <div className="relative h-[100dvh] w-full overflow-hidden flex flex-col bg-bg-light font-outfit">
       <div className="flex-1 z-0 relative">
         {pickup ? (
           <MapContainer center={pickup} zoom={14} style={{ height: '100%', width: '100%' }} zoomControl={false}>
@@ -207,7 +207,12 @@ export const PassengerApp = ({ isPublic = false }) => {
 
         <div className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2 pointer-events-none">
           <div className="glass px-5 py-3 rounded-2xl flex items-center gap-3 shadow-xl border border-white/40 pointer-events-auto">
-            {step > 1 && <button onClick={() => setStep(step - 1)} className="text-primary hover:scale-110 p-1"><ChevronLeft size={20} /></button>}
+            <button onClick={() => {
+              if (step > 2) setStep(step - 1);
+              else if (step === 2 && isPublic) navigate('/');
+            }} className="text-primary hover:scale-110 p-1">
+              <ChevronLeft size={20} />
+            </button>
             <div className="flex-1 truncate">
                <h1 className="text-sm font-bold text-primary tracking-tight">RouteSync</h1>
                <p className="text-xs text-text-muted font-medium mt-1">Passenger Online</p>

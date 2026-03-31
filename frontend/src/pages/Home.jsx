@@ -85,8 +85,8 @@ export const Home = () => {
       </main>
 
       <footer className="mt-20 py-10 border-t border-gray-200">
-        <div className="container mx-auto px-6 text-center text-text-muted font-medium italic">
-          &copy; 2026 RouteSync Industrial Labs. All terminal connections encrypted.
+        <div className="container mx-auto px-6 text-center text-text-muted font-medium">
+          &copy; 2026 RouteSync. Commute smarter and safer.
         </div>
       </footer>
     </div>

@@ -6,6 +6,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { AdminLogin } from './pages/AdminLogin';
 import { DriverDashboard } from './pages/DriverDashboard';
 import { PassengerApp } from './pages/PassengerApp';
 import { TripHistory } from './pages/TripHistory';
@@ -21,6 +22,7 @@ function App() {
         <Route element={<ProtectedRoute publicOnly={true} />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/register" element={<Register />} />
         </Route>
         
